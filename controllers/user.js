@@ -3,8 +3,6 @@ const router = express.Router();
 const User = require('../models/user');
 const Card = require('../models/card');
 
-
-
 router.get('/profile/:userID', async (req, res) => {
     try {
         console.log("USERPROFILE");
