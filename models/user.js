@@ -6,6 +6,7 @@ const userSchema = mongoose.Schema({
     password: {type: String, required: true},
     createdPosts: {type: Number, default: 0},
     upvotedPosts: {type: [String]},
+    upvoteCount: {type: Number, default: 0},
     following: {type: [mongoose.Schema.Types.ObjectId], ref: "following"},
     followers: {type: [mongoose.Schema.Types.ObjectId], ref: 'followers'}
 });

@@ -4,6 +4,7 @@ const User = require('../models/user');
 const Card = require('../models/card');
 
 router.get('/profile/:userID', async (req, res) => {
+    // TODO POPULATE THE FOLLOWERS AND FOLLOWING ARRAYS
     try {
         console.log("USERPROFILE");
         // TODO REMOVE THE PASSWORD
@@ -27,14 +28,21 @@ router.put('/increment/:userID', async (req, res) => {
     }
 });
 
-router.put('/upvote/:cardID', async (req, res) => {
+router.put('/upvote/:userID', async (req, res) => {
+
+    // ! CHANGED SOME THINGS HERE. I HAD THE PARAMS CONTAIN THE CARD ID AND THE BODY THE USER I SWITCHED THESE JUST NOW
     try {
         console.log("===UPVOTED===");
-        const userUpvoted = await User.findByIdAndUpdate(req.body._id, 
-            {$addToSet: {"upvotedPosts": req.params.cardID}}, {new:true})
+        const userUpvoted = await User.findByIdAndUpdate(req.params.userID, 
+            {$addToSet: {"upvotedPosts": req.body._id}}, {new:true})
         
-        await Card.findByIdAndUpdate(req.params.cardID, 
-           {$addToSet: {"upvotes": req.body._id}},{new:true});
+        await Card.findByIdAndUpdate(req.body._id, 
+           {$addToSet: {"upvotes": req.params.userID}},{new:true});
+
+        await User.findByIdAndUpdate(req.body.created_by._id, 
+            {$inc : {upvoteCount: 1}}, {new: true});
+
+        // TODO make it so that the associated user gets an upvote added to their score
 
         res.status(200).send(userUpvoted);
     } catch (error) {
