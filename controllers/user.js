@@ -6,7 +6,9 @@ const Card = require('../models/card');
 router.get('/profile/:userID', async (req, res) => {
     // TODO POPULATE THE FOLLOWERS AND FOLLOWING ARRAYS
     try {
+        console.log("====================")
         console.log("USERPROFILE");
+        console.log("====================")
         // TODO REMOVE THE PASSWORD
         let userProfile = await User.findById(req.params.userID);
          res.status(200).send(userProfile);
@@ -29,42 +31,52 @@ router.put('/increment/:userID', async (req, res) => {
 });
 
 router.put('/upvote/:userID', async (req, res) => {
-
-    // ! CHANGED SOME THINGS HERE. I HAD THE PARAMS CONTAIN THE CARD ID AND THE BODY THE USER I SWITCHED THESE JUST NOW
     try {
-        console.log("===UPVOTED===");
-        const userUpvoted = await User.findByIdAndUpdate(req.params.userID, 
-            {$addToSet: {"upvotedPosts": req.body._id}}, {new:true})
-        
-        await Card.findByIdAndUpdate(req.body._id, 
-           {$addToSet: {"upvotes": req.params.userID}},{new:true});
-
-        await User.findByIdAndUpdate(req.body.created_by._id, 
-            {$inc : {upvoteCount: 1}}, {new: true});
-
-        // TODO make it so that the associated user gets an upvote added to their score
-
-        res.status(200).send(userUpvoted);
+        // * When the user upvotes someone, the upvoted user's data will be modified and 
+        // * stored in the database.
+             const updatedUser = await User.findByIdAndUpdate(req.params.userID,
+                {$inc: {"upvotedPosts": 1}}, {new: true});
+            
+            res.send(updatedUser);
     } catch (error) {
-        console.log("ERROR :",error);
         
     }
 });
 
-router.put('/follow/:followID', async (req, res) => {
-    try {
-        console.log("FOLLOW");
-        const nowFollowingUser = await User.findByIdAndUpdate(req.body._id, 
-            {$addToSet: {"following": req.params.followID}}, {new:true})
-        
-        await User.findByIdAndUpdate(req.body._id, 
-           {$addToSet: {"followers": req.body._id}},{new:true});
 
-        res.status(200).send(nowFollowingUser);
+router.put('/follow/:userID', async (req, res) => {
+    console.log("====================")
+    console.log("FOLLOW");
+    console.log("====================")
+    try {
+        // * When the user follows someone, the data needs to be updated and send back to the front end
+        // * The user using the application will be stored and queried through the params.
+        const updatedUser = await User.findByIdAndUpdate(req.params.userID, 
+            // * The id of the user that will be followed will be stored into the 'following' array.
+            {$addToSet: {"following": req.body._id}}, {new: true}); 
+        res.send(updatedUser);
     } catch (error) {
-        console.log("ERROR :",error);
         
     }
 });
+
+// * FOLLOWED BY ANOTHER USER
+
+router.put('/followedBy/:userID', async (req, res) => {
+    console.log("====================")
+    console.log("FOLLOWED");
+    console.log("====================")
+    try {
+        // * When the user follows someone, consequently, a user is followed. This data
+        // * will be modified in the database and updated when retrieved
+        const followedUser = await User.findByIdAndUpdate(req.params.userID, 
+            {$addToSet: {"followers": req.body._id}}, {new: true});
+
+        res.send(followedUser);
+    } catch (error) {
+        
+    }
+});
+
 
 module.exports = router;
