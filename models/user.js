@@ -9,8 +9,8 @@ const userSchema = mongoose.Schema({
     upvoteCount: {type: Number, default: 0},
     followersCount: {type: Number, default: 0},
     followingCount: {type: Number, default: 0},
-    following: {type: [mongoose.Schema.Types.ObjectId], ref: "following"},
-    followers: {type: [mongoose.Schema.Types.ObjectId], ref: 'followers'}
+    following: {type: [String], default: []},
+    followers: {type: [String], default: []}
 });
 
 const User = mongoose.model('User', userSchema);

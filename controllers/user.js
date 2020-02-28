@@ -51,9 +51,9 @@ router.put('/follow/:userID', async (req, res) => {
     try {
         // * When the user follows someone, the data needs to be updated and send back to the front end
         // * The user using the application will be stored and queried through the params.
-        const updatedUser = await User.findByIdAndUpdate(req.params.userID, 
+        const updatedUser = await User.findByIdAndUpdate(req.body._id, 
             // * The id of the user that will be followed will be stored into the 'following' array.
-            {$addToSet: {"following": req.body._id}}, {new: true}); 
+            {$addToSet: {"following": req.params.userID}}, {new: true}); 
         res.send(updatedUser);
     } catch (error) {
         
@@ -69,8 +69,8 @@ router.put('/followedBy/:userID', async (req, res) => {
     try {
         // * When the user follows someone, consequently, a user is followed. This data
         // * will be modified in the database and updated when retrieved
-        const followedUser = await User.findByIdAndUpdate(req.params.userID, 
-            {$addToSet: {"followers": req.body._id}}, {new: true});
+        const followedUser = await User.findByIdAndUpdate(req.body._id, 
+            {$addToSet: {"followers": req.params.userID}}, {new: true});
 
         res.send(followedUser);
     } catch (error) {

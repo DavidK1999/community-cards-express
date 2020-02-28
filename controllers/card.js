@@ -18,9 +18,13 @@ router.get('/all', async (req, res) => {
 });
 
 
-router.get('/feed/:userID', async (req, res) => {
-    // let feedCards = await Card.find();
-    let feedCards = await Card.find({"created_by": {$in: req.params.userID}}).populate({path: "created_by"});
+router.post('/feed/:userID', async (req, res) => {
+    console.log("====================")
+    console.log("FEED");
+    console.log("====================")  
+    let following = req.body.following;
+    let feedCards = await Card.find({$or : [{"created_by" : {$in: following}}, {"author_id": req.params.userID}]}).populate({path: "created_by"});
+    console.log(feedCards);
     res.send(feedCards);
 });
 
