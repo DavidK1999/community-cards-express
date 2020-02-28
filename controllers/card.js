@@ -6,15 +6,22 @@ const User = require('../models/user');
 
 router.get('/all', async (req, res) => {
     try {
-        // console.log("====================")
-        // console.log("FETCHED");
-        // console.log("====================")        
+        console.log("====================")
+        console.log("FETCHED");
+        console.log("====================")        
         let allCards = await Card.find().populate({path: "created_by"});
         res.status(200).send(allCards);
     } catch (error) {
         console.log("ERROR : ", error);
         res.sendStatus(500);
     }
+});
+
+
+router.get('/feed/:userID', async (req, res) => {
+    // let feedCards = await Card.find();
+    let feedCards = await Card.find({"created_by": {$in: req.params.userID}}).populate({path: "created_by"});
+    res.send(feedCards);
 });
 
 router.get('/profile/:id', async (req, res) => {
