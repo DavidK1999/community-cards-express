@@ -10,7 +10,6 @@ router.get('/all', async (req, res) => {
         console.log("====================")        
     try {
         let allCards = await Card.find().populate({path: "created_by"});
-        console.log(allCards);
         res.status(200).send(allCards);
     } catch (error) {
         console.log("ERROR : ", error);
@@ -49,7 +48,6 @@ router.get('/profile/:id', async (req, res) => {
         console.log("====================")
         console.log(req.params.id);
         let profileCards = await Card.find({"author_id" : req.params.id}).populate({path: "created_by"}).exec();
-        console.log(profileCards);
         res.status(200).send(profileCards);
     } catch (error) {
         

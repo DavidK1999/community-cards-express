@@ -12,6 +12,7 @@ router.get('/profile/:userID', async (req, res) => {
         // TODO REMOVE THE PASSWORD
         // TODO ADD THE PROFILE CARDS HERE SO THAT ON ROUTE, THE RIGHT DATA CAN BE SENT TO THE FRONT END
         let userProfile = await User.findOne({"username": req.params.userID});
+        console.log(userProfile);
          res.status(200).send(userProfile);
         } catch (error) {
             console.log("ERROR :", error);
